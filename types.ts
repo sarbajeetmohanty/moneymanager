@@ -35,15 +35,6 @@ export interface Friend {
   balance: number;
 }
 
-export interface Participant {
-  userId: string;
-  name: string;
-  share: number;
-  paidAmount: number;
-  hasPaid: boolean;
-  isConfirmed: boolean;
-}
-
 export interface Transaction {
   id: string;
   creatorId: string;
@@ -60,6 +51,15 @@ export interface Transaction {
   participants: Participant[];
   payerId: string;
   friendId?: string;
+}
+
+export interface Participant {
+  userId: string;
+  name: string;
+  share: number;
+  paidAmount: number;
+  hasPaid: boolean;
+  isConfirmed: boolean;
 }
 
 export interface Notification {

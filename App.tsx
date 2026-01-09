@@ -23,7 +23,6 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<'home' | 'transactions' | 'friends' | 'notifications' | 'profile'>('home');
   const [showVerification, setShowVerification] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [toast, setToast] = useState<{ msg: string; type: string } | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
@@ -34,11 +33,7 @@ const App: React.FC = () => {
       try {
         const parsedUser = JSON.parse(savedUser);
         setUser(parsedUser);
-        // Only show verification if strictly not verified
-        // Fix: Use String conversion to safely compare both boolean and string variants ("false" vs false) without TS overlap errors
-        if (String(parsedUser.isVerified) === "false") {
-          setShowVerification(true);
-        }
+        if (!parsedUser.isVerified) setShowVerification(true);
       } catch (e) {
         localStorage.removeItem('ff_user');
       }
@@ -64,30 +59,23 @@ const App: React.FC = () => {
   const handleLogin = (userData: User) => {
     setUser(userData);
     localStorage.setItem('ff_user', JSON.stringify(userData));
-    // Fix: Use String conversion to safely compare both boolean and string variants ("false" vs false) without TS overlap errors
-    if (String(userData.isVerified) === "false") {
-      setShowVerification(true);
+    if (!userData.isVerified) setShowVerification(true);
+    showToast(`Hello ${userData.username}!`, 'success');
+  };
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to log out? Your data is safe in the cloud.")) {
+      setUser(null);
+      localStorage.removeItem('ff_user');
+      showToast("Logged out successfully", "info");
     }
-    showToast(`Welcome, ${userData.username}!`, 'success');
-  };
-
-  const triggerLogout = () => {
-    setShowLogoutModal(true);
-  };
-
-  const confirmLogout = () => {
-    setUser(null);
-    localStorage.removeItem('ff_user');
-    setShowLogoutModal(false);
-    showToast("Session Terminated", "info");
-    setActiveTab('home');
   };
 
   if (isInitializing) {
     return (
       <div className="h-screen bg-white dark:bg-slate-950 flex flex-col items-center justify-center space-y-4">
-        <div className="w-12 h-12 bg-indigo-600 rounded-[1.5rem] animate-bounce shadow-2xl shadow-indigo-500/50"></div>
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Syncing Wealth...</p>
+        <div className="w-12 h-12 bg-indigo-600 rounded-3xl animate-bounce"></div>
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Loading your money...</p>
       </div>
     );
   }
@@ -102,7 +90,7 @@ const App: React.FC = () => {
         <Layout 
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
-          onLogout={triggerLogout}
+          onLogout={handleLogout}
           onRefresh={refreshAll}
           user={user}
         >
@@ -115,10 +103,9 @@ const App: React.FC = () => {
           </div>
         </Layout>
 
-        {/* TOAST SYSTEM */}
         {toast && (
           <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[300] animate-in slide-in-from-top-12 fade-in duration-500">
-            <div className={`px-8 py-5 rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] backdrop-blur-3xl flex items-center gap-4 ${
+            <div className={`px-8 py-5 rounded-[2.5rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] backdrop-blur-3xl flex items-center gap-4 ${
               toast.type === 'error' ? 'bg-red-500 text-white' : 
               toast.type === 'info' ? 'bg-indigo-600 text-white' : 
               'bg-slate-900 dark:bg-white text-white dark:text-slate-900'
@@ -129,36 +116,6 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* LOGOUT CONFIRMATION MODAL */}
-        {showLogoutModal && (
-          <div className="fixed inset-0 z-[400] flex items-center justify-center bg-slate-950/80 backdrop-blur-xl p-6">
-            <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-[3.5rem] p-12 shadow-2xl animate-in zoom-in-95 duration-500 text-center border border-white/5">
-              <div className="w-20 h-20 bg-red-100 dark:bg-red-500/10 text-red-600 rounded-[2.2rem] flex items-center justify-center mx-auto mb-8 transform -rotate-6 shadow-xl">
-                <i className="fa-solid fa-power-off text-3xl"></i>
-              </div>
-              <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-4">Confirm Logout</h2>
-              <p className="text-slate-400 text-xs font-bold leading-relaxed mb-10 px-4">
-                Are you sure you want to log out? Any pending actions will remain saved and can be continued after logging back in.
-              </p>
-              <div className="grid grid-cols-2 gap-4">
-                <button 
-                  onClick={() => setShowLogoutModal(false)} 
-                  className="py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest active:scale-95 transition-all"
-                >
-                  Stay In
-                </button>
-                <button 
-                  onClick={confirmLogout} 
-                  className="bg-red-600 text-white py-5 rounded-3xl shadow-xl shadow-red-500/20 text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all"
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* VERIFICATION MODAL */}
         {showVerification && (
           <VerificationModal 
             user={user} 
@@ -166,7 +123,7 @@ const App: React.FC = () => {
               setUser(updatedUser);
               localStorage.setItem('ff_user', JSON.stringify(updatedUser));
               setShowVerification(false);
-              showToast("Identity Verified!", "success");
+              showToast("Account Verified!", "success");
             }} 
           />
         )}
