@@ -27,9 +27,9 @@ export const api = {
   fetchFriends: (id: string) => request('fetchFriends', { userId: id }),
   fetchNotifications: (id: string) => request('fetchNotifications', { userId: id }),
   fetchTransactionHistory: (id: string) => request('fetchTransactionHistory', { userId: id }),
-  // Updated handleAction to support an optional 5th argument 'amount' for partial payments and settlements
   handleAction: (id: string, nId: string, act: string, tId: string, amount?: number) => request('handleAction', { userId: id, notificationId: nId, action: act, transactionId: tId, amount }),
   removeFriend: (id: string, fId: string) => request('removeFriend', { userId: id, friendId: fId }),
   sendFriendRequest: (userId: string, targetUsername: string) => request('sendFriendRequest', { userId, targetUsername }),
   searchUsers: (query: string) => request('searchUsers', { query }),
+  sendReminder: (userId: string, targetUserId: string, transactionId: string) => request('sendReminder', { userId, targetUserId, transactionId })
 };
