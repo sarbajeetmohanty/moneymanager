@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { Auth } from './components/Auth';
 import { Layout } from './components/Layout';
@@ -68,8 +67,6 @@ const App: React.FC = () => {
     showToast(`Welcome back, ${userData.username}!`, 'success');
   };
 
-  const triggerLogout = () => setShowLogoutModal(true);
-
   const confirmLogout = () => {
     setUser(null);
     localStorage.removeItem('ff_user');
@@ -97,7 +94,7 @@ const App: React.FC = () => {
         <Layout 
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
-          onLogout={triggerLogout}
+          onLogout={() => setShowLogoutModal(true)}
           onRefresh={refreshAll}
           user={user}
         >
