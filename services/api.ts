@@ -1,8 +1,7 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyqQg_e2kGxQO6npYMZZDwd7-m3ANpY8i7AEasNUQekPbw0WKJm-0gntcpbPzBVFGTb/exec';
-
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxx0_AcjT_USphZ5E8932guPgUJi-qtVJWZvMPY-qA9rLTih38ixcR0ArOsOqjKNsrW/exec';
 async function request(action: string, data: any = {}) {
   try {
     const response = await fetch(API_BASE_URL, {
