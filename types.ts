@@ -1,4 +1,5 @@
 
+
 export type PaymentMode = 'Cash' | 'Online';
 export type TransactionType = 'Income' | 'Expense' | 'Money Given' | 'Money Taken' | 'He Paid Back' | 'I Paid Back' | 'Split';
 export type TransactionStatus = 'Pending' | 'Approved' | 'Rejected' | 'Completed' | 'Paid';
@@ -35,6 +36,15 @@ export interface Friend {
   balance: number;
 }
 
+export interface Participant {
+  userId: string;
+  name: string;
+  share: number;
+  paidAmount: number;
+  hasPaid: boolean;
+  isConfirmed: boolean;
+}
+
 export interface Transaction {
   id: string;
   creatorId: string;
@@ -51,15 +61,6 @@ export interface Transaction {
   participants: Participant[];
   payerId: string;
   friendId?: string;
-}
-
-export interface Participant {
-  userId: string;
-  name: string;
-  share: number;
-  paidAmount: number;
-  hasPaid: boolean;
-  isConfirmed: boolean;
 }
 
 export interface Notification {
