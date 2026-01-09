@@ -67,7 +67,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     });
   }, [history, timeFilter, customRange]);
 
-  // Chart 1: Cash Flow (Incoming/Outgoing)
   const cashFlowData = useMemo(() => {
     const daily: Record<string, any> = {};
     filteredHistory.forEach(t => {
@@ -79,7 +78,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     return Object.values(daily).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, [filteredHistory]);
 
-  // Chart 2: Analysis (Incoming, Outgoing, Given, Taken)
   const analysisData = useMemo(() => {
     let inc = 0, out = 0, giv = 0, tak = 0;
     filteredHistory.forEach(t => {
@@ -96,7 +94,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     ];
   }, [filteredHistory]);
 
-  // Chart 3: Category Pie
   const categoryData = useMemo(() => {
     const cats: Record<string, number> = {};
     filteredHistory.forEach(t => {
@@ -109,33 +106,31 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   }, [filteredHistory]);
 
   return (
-    <div className="space-y-8 pb-48 no-scrollbar animate-in fade-in duration-1000">
+    <div className="space-y-10 pb-48 no-scrollbar animate-in fade-in duration-1000">
       
-      {/* Metrics Card - High Contrast Fix */}
-      <div className="card-ui p-10 bg-slate-900 dark:bg-black text-white shadow-2xl relative overflow-hidden group">
+      <div className="card-ui p-12 bg-slate-900 dark:bg-black text-white shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] relative overflow-hidden group">
         <div className="relative z-10">
-          <p className="text-white/50 text-[10px] font-black uppercase tracking-[0.4em] mb-2">Total Balance</p>
-          <h2 className="text-6xl font-black tracking-tighter mb-10">₹{(stats.total || 0).toLocaleString()}</h2>
+          <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.5em] mb-4">Net Liquid Wealth</p>
+          <h2 className="text-7xl font-black tracking-tighter mb-12">₹{(stats.total || 0).toLocaleString()}</h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <MetricBox label="Online" value={stats.online} color="text-indigo-400" />
-            <MetricBox label="Cash" value={stats.cash} color="text-emerald-400" />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            <MetricBox label="In Bank" value={stats.online} color="text-indigo-400" />
+            <MetricBox label="In Hand" value={stats.cash} color="text-emerald-400" />
             <MetricBox label="Pending" value={stats.pending} color="text-amber-400" />
-            <MetricBox label="Given" value={stats.moneyGiven} color="text-rose-400" />
-            <MetricBox label="Taken" value={stats.moneyTaken} color="text-cyan-400" />
+            <MetricBox label="Loaned Out" value={stats.moneyGiven} color="text-rose-400" />
+            <MetricBox label="Owed Out" value={stats.moneyTaken} color="text-cyan-400" />
           </div>
         </div>
-        <div className="absolute -top-20 -right-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px]"></div>
+        <div className="absolute -top-40 -right-40 w-[30rem] h-[30rem] bg-indigo-500/10 rounded-full blur-[120px] transition-transform duration-[3000ms] group-hover:scale-125"></div>
       </div>
 
-      {/* Advanced Date Filters */}
-      <div className="space-y-4">
-        <div className="flex bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl p-1.5 rounded-[2rem] shadow-sm">
+      <div className="space-y-6">
+        <div className="flex bg-white/60 dark:bg-slate-900/60 backdrop-blur-3xl p-2 rounded-[3rem] shadow-xl mx-2">
           {['Today', 'Yesterday', '7D', '30D', 'Custom'].map(f => (
             <button
               key={f}
               onClick={() => setTimeFilter(f as TimeFilter)}
-              className={`flex-1 py-3 text-[9px] font-black uppercase tracking-widest rounded-full transition-all ${timeFilter === f ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest rounded-full transition-all duration-300 ${timeFilter === f ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl scale-110' : 'text-slate-400 hover:text-slate-600'}`}
             >
               {f}
             </button>
@@ -143,16 +138,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         </div>
 
         {timeFilter === 'Custom' && (
-          <div className="flex gap-2 animate-in slide-in-from-top-4 duration-500 px-2">
+          <div className="flex gap-3 animate-in slide-in-from-top-4 duration-500 px-4">
             <input 
               type="date" 
-              className="flex-1 bg-white dark:bg-slate-900 p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-500 shadow-sm"
+              className="flex-1 bg-white dark:bg-slate-900 p-5 rounded-3xl text-[10px] font-black uppercase tracking-widest text-slate-500 shadow-sm border-2 border-slate-50 dark:border-slate-800"
               value={customRange.start}
               onChange={e => setCustomRange({...customRange, start: e.target.value})}
             />
             <input 
               type="date" 
-              className="flex-1 bg-white dark:bg-slate-900 p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-500 shadow-sm"
+              className="flex-1 bg-white dark:bg-slate-900 p-5 rounded-3xl text-[10px] font-black uppercase tracking-widest text-slate-500 shadow-sm border-2 border-slate-50 dark:border-slate-800"
               value={customRange.end}
               onChange={e => setCustomRange({...customRange, end: e.target.value})}
             />
@@ -160,12 +155,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         )}
       </div>
 
-      {/* 3 Graphs Section */}
-      <div className="space-y-8">
-        {/* 1. Cash Flow (Incoming/Outgoing) */}
-        <div className="card-ui bg-white dark:bg-slate-900 p-8 shadow-xl">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8 ml-2">Cash Flow Trend</h3>
-          <div className="h-64">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="card-ui bg-white dark:bg-slate-900 p-10 shadow-2xl relative overflow-hidden">
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-10 ml-2">Flux Analysis</h3>
+          <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={cashFlowData}>
                 <defs>
@@ -180,24 +173,23 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#cbd5e144" />
                 <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 900, fill: '#94a3b8' }} />
-                <Tooltip contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', fontSize: 10, fontWeight: 800 }} />
-                <Area type="monotone" dataKey="inflow" stroke="#10b981" fillOpacity={1} fill="url(#colorIn)" strokeWidth={4} />
-                <Area type="monotone" dataKey="outflow" stroke="#f43f5e" fillOpacity={1} fill="url(#colorOut)" strokeWidth={4} />
+                <Tooltip contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 20px 50px rgba(0,0,0,0.1)', fontSize: 10, fontWeight: 800 }} />
+                <Area type="monotone" dataKey="inflow" stroke="#10b981" fillOpacity={1} fill="url(#colorIn)" strokeWidth={5} />
+                <Area type="monotone" dataKey="outflow" stroke="#f43f5e" fillOpacity={1} fill="url(#colorOut)" strokeWidth={5} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* 2. Analysis of 4 Main Types */}
-        <div className="card-ui bg-white dark:bg-slate-900 p-8 shadow-xl">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8 ml-2">4-Way Analysis</h3>
-          <div className="h-64">
+        <div className="card-ui bg-white dark:bg-slate-900 p-10 shadow-2xl">
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-10 ml-2">Type Distribution</h3>
+          <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={analysisData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#cbd5e144" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 900, fill: '#94a3b8' }} />
-                <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '1rem', border: 'none', fontSize: 10, fontWeight: 800 }} />
-                <Bar dataKey="value" radius={[12, 12, 12, 12]} barSize={40}>
+                <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '1.5rem', border: 'none', fontSize: 10, fontWeight: 800 }} />
+                <Bar dataKey="value" radius={[15, 15, 15, 15]} barSize={45}>
                   {analysisData.map((entry, index) => <Cell key={index} fill={entry.color} />)}
                 </Bar>
               </BarChart>
@@ -205,26 +197,26 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           </div>
         </div>
 
-        {/* 3. Category Distribution */}
-        <div className="card-ui bg-white dark:bg-slate-900 p-8 shadow-xl">
-          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8 ml-2">Category Spending</h3>
-          <div className="h-64 flex items-center">
+        <div className="card-ui bg-white dark:bg-slate-900 p-10 shadow-2xl md:col-span-2">
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-10 ml-2">Category Spending</h3>
+          <div className="h-80 flex items-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie 
                   data={categoryData} 
-                  innerRadius={70} 
-                  outerRadius={100} 
-                  paddingAngle={5} 
+                  innerRadius={80} 
+                  outerRadius={120} 
+                  paddingAngle={8} 
                   dataKey="value" 
                   stroke="none"
+                  animationDuration={1500}
                 >
                   {categoryData.map((entry, index) => (
                     <Cell key={index} fill={Object.values(themeColors)[index % 15]} />
                   ))}
                 </Pie>
                 <Tooltip />
-                <Legend iconType="circle" wrapperStyle={{ fontSize: 9, fontWeight: 900, textTransform: 'uppercase' }} />
+                <Legend iconType="circle" wrapperStyle={{ fontSize: 10, fontWeight: 900, textTransform: 'uppercase', paddingBottom: 20 }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -235,6 +227,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
 };
 
 const MetricBox = ({ label, value, color }: any) => (
-  <div className="bg-white/5 p-4 rounded-[1.5rem] hover:bg-white/10 transition-all">
-    <p className="text-[8px] text-white/50 font-black uppercase tracking-widest mb-1">{label}</p>
-    <p className={`text-sm font-black ${color}`}>₹{(value || 0).toLocaleString()}</p>
+  <div className="bg-white/5 p-6 rounded-[2.25rem] hover:bg-white/10 transition-all duration-300 transform active:scale-95 group/metric cursor-default">
+    <p className="text-[9px] text-white/50 font-black uppercase tracking-widest mb-2 group-hover/metric:text-white transition-colors">{label}</p>
+    <p className={`text-lg font-black ${color} tracking-tight`}>₹{(value || 0).toLocaleString()}</p>
+  </div>
+);
