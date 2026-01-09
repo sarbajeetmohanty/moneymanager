@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { User } from '../types';
 import { 
@@ -100,22 +99,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     ];
   }, [filteredHistory]);
 
-  const categoryData = useMemo(() => {
-    const cats: Record<string, number> = {};
-    filteredHistory.forEach(t => {
-      if (t.type === 'Expense') {
-        cats[t.category] = (cats[t.category] || 0) + t.amount;
-      }
-    });
-    return Object.entries(cats).map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value);
-  }, [filteredHistory]);
-
   return (
-    <div className="space-y-6 xs:space-y-10 pb-48 no-scrollbar animate-in fade-in duration-1000 px-1">
+    <div className="space-y-6 xs:space-y-8 pb-48 no-scrollbar animate-in fade-in duration-1000 px-1">
       
-      {/* Re-engineered Wealth Hero Card - Vibrant Gradient & High Visibility */}
-      <div className="card-ui p-8 xs:p-12 bg-gradient-to-br from-indigo-600 to-violet-700 dark:from-slate-900 dark:via-slate-950 dark:to-black text-white shadow-[0_40px_80px_-20px_rgba(79,70,229,0.3)] dark:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)] relative overflow-hidden group border-none">
+      {/* VIBRANT HIGH-CONTRAST DASHBOARD HERO */}
+      <div className="card-ui p-8 xs:p-12 bg-gradient-to-br from-indigo-700 via-violet-700 to-indigo-900 dark:from-slate-900 dark:via-slate-950 dark:to-black text-white shadow-[0_40px_80px_-20px_rgba(79,70,229,0.4)] dark:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)] relative overflow-hidden group border-none rounded-[3.5rem]">
         <div className="relative z-10">
           <div className="flex justify-between items-start mb-6">
             <p className="text-white/80 dark:text-white/60 text-[11px] font-black uppercase tracking-[0.4em]">Net Liquid Wealth</p>
@@ -128,7 +116,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           </div>
           <h2 className="text-5xl xs:text-7xl font-black tracking-tighter mb-10 text-white drop-shadow-2xl">₹{(stats.total || 0).toLocaleString()}</h2>
           
-          <div className="grid grid-cols-2 xs:grid-cols-3 gap-3 xs:gap-6">
+          <div className="grid grid-cols-2 xs:grid-cols-3 gap-3 xs:gap-5">
             <MetricBox label="In Bank" value={stats.online} color="text-indigo-100" />
             <MetricBox label="In Hand" value={stats.cash} color="text-emerald-100" />
             <MetricBox label="Pending" value={stats.pending} color="text-amber-100" />
@@ -136,46 +124,25 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             <MetricBox label="Owed" value={stats.moneyTaken} color="text-cyan-100" />
           </div>
         </div>
-        
-        {/* Animated Background Orbs */}
-        <div className="absolute -top-40 -right-40 w-[30rem] h-[30rem] bg-indigo-400/20 dark:bg-indigo-600/10 rounded-full blur-[140px] transition-transform duration-[4000ms] group-hover:scale-125"></div>
-        <div className="absolute -bottom-20 -left-20 w-[20rem] h-[20rem] bg-emerald-400/10 dark:bg-emerald-600/5 rounded-full blur-[100px]"></div>
+        <div className="absolute -top-40 -right-40 w-[30rem] h-[30rem] bg-indigo-400/30 dark:bg-indigo-600/10 rounded-full blur-[140px] transition-transform duration-[4000ms] group-hover:scale-125"></div>
       </div>
 
-      {/* Improved Controls Visibility */}
       <div className="space-y-4">
         <div className="flex bg-white dark:bg-slate-900 p-2 rounded-[3rem] shadow-xl border border-slate-200 dark:border-slate-800">
           {['Today', 'Yesterday', '7D', '30D', 'Custom'].map(f => (
             <button
               key={f}
               onClick={() => setTimeFilter(f as TimeFilter)}
-              className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest rounded-full transition-all duration-300 ${timeFilter === f ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl scale-105' : 'text-slate-900 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+              className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest rounded-full transition-all duration-300 ${timeFilter === f ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl scale-105' : 'text-slate-900 dark:text-slate-400 font-bold hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               {f}
             </button>
           ))}
         </div>
-
-        {timeFilter === 'Custom' && (
-          <div className="flex gap-3 animate-in slide-in-from-top-4 duration-500">
-            <input 
-              type="date" 
-              className="flex-1 bg-white dark:bg-slate-900 p-5 rounded-3xl text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white shadow-md border-2 border-slate-200 dark:border-slate-800"
-              value={customRange.start}
-              onChange={e => setCustomRange({...customRange, start: e.target.value})}
-            />
-            <input 
-              type="date" 
-              className="flex-1 bg-white dark:bg-slate-900 p-5 rounded-3xl text-[10px] font-black uppercase tracking-widest text-slate-900 dark:text-white shadow-md border-2 border-slate-200 dark:border-slate-800"
-              value={customRange.end}
-              onChange={e => setCustomRange({...customRange, end: e.target.value})}
-            />
-          </div>
-        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="card-ui bg-white dark:bg-slate-900 p-8 shadow-xl relative overflow-hidden border border-slate-200 dark:border-slate-800">
+        <div className="card-ui bg-white dark:bg-slate-900 p-8 shadow-xl relative overflow-hidden border border-slate-200 dark:border-slate-800 rounded-[2.5rem]">
           <h3 className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
             <i className="fa-solid fa-chart-line text-indigo-500"></i> Flux Analysis
           </h3>
@@ -203,9 +170,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           </div>
         </div>
 
-        <div className="card-ui bg-white dark:bg-slate-900 p-8 shadow-xl border border-slate-200 dark:border-slate-800">
+        <div className="card-ui bg-white dark:bg-slate-900 p-8 shadow-xl border border-slate-200 dark:border-slate-800 rounded-[2.5rem]">
           <h3 className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
-            <i className="fa-solid fa-pizza-slice text-amber-500"></i> Category Spending
+            <i className="fa-solid fa-pizza-slice text-amber-500"></i> Spending Distribution
           </h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -226,8 +193,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
 };
 
 const MetricBox = ({ label, value, color }: any) => (
-  <div className="bg-white/10 dark:bg-slate-800/40 p-5 rounded-[2.25rem] hover:bg-white/20 dark:hover:bg-slate-800 transition-all duration-300 transform active:scale-95 group/metric cursor-default backdrop-blur-md border border-white/10 shadow-lg">
-    <p className="text-[10px] text-white/70 dark:text-white/40 font-black uppercase tracking-widest mb-2 transition-colors">{label}</p>
+  <div className="bg-white/10 dark:bg-slate-800/40 p-5 rounded-[2rem] hover:bg-white/20 dark:hover:bg-slate-800 transition-all duration-300 transform active:scale-95 group/metric cursor-default backdrop-blur-md border border-white/10 shadow-lg">
+    <p className="text-[10px] text-white/80 dark:text-white/40 font-black uppercase tracking-widest mb-2">{label}</p>
     <p className={`text-base xs:text-lg font-black ${color} tracking-tight`}>₹{(value || 0).toLocaleString()}</p>
   </div>
 );
