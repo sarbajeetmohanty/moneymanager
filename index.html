@@ -43,18 +43,21 @@
       ::-webkit-scrollbar { display: none; }
       body { transition: background-color 0.4s ease; touch-action: manipulation; }
 
-      /* BORDERLESS DESIGN SYSTEM PRESETS */
-      .style-modern { --ui-bg: #f8fafc; }
-      .style-modern .card-ui { background: #ffffff; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.06); border-radius: 2.5rem; }
-      .dark.style-modern .card-ui { background: #0f172a; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+      .card-ui { background: #ffffff; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.06); border-radius: 2.5rem; }
+      .dark .card-ui { background: #0f172a; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
       
-      /* Additional styles for pending/completed transactions */
       .status-pending { color: #d97706; }
       .status-completed { color: #059669; }
       .status-rejected { color: #dc2626; }
 
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
     </style>
     <script type="importmap">
 {
