@@ -29,7 +29,7 @@
       }
     </script>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;800&family=Outfit:wght@300;600;900&family=Lexend:wght@300;600;900&family=Inter:wght@400;900&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;900&display=swap');
       
       * { 
         font-family: 'Plus Jakarta Sans', sans-serif; 
@@ -41,52 +41,37 @@
       }
       
       ::-webkit-scrollbar { display: none; }
+      
       html, body { 
         height: 100%; 
         margin: 0; 
         padding: 0; 
         overflow: hidden; 
-        background-color: #f8fafc; /* Fallback for light mode */
+        background-color: #f8fafc;
+        transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
       
       .dark html, .dark body { background-color: #020617; }
 
-      /* FIXED PRESETS TO FILL SCREEN AND PREVENT GAPS */
-      .style-modern { background: #f8fafc !important; }
-      .dark.style-modern { background: #020617 !important; }
-      .style-modern .card-ui { background: #ffffff; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05); border-radius: 2rem; }
-      .dark.style-modern .card-ui { background: #0f172a; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4); }
+      #root { height: 100%; }
 
-      .style-glass { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) fixed !important; }
-      .style-glass .card-ui { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border-radius: 2.5rem; }
-      .dark.style-glass .card-ui { background: rgba(15, 23, 42, 0.8); }
+      /* Robust Preset Backgrounds */
+      .style-modern { background-color: #f8fafc !important; }
+      .dark.style-modern { background-color: #020617 !important; }
+      .style-midnight { background-color: #020617 !important; }
+      .style-void { background-color: #000000 !important; }
+      .style-glass { 
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) fixed !important; 
+        background-attachment: fixed !important;
+      }
 
-      .style-void { background: #000000 !important; }
-      .style-void .card-ui { background: #111111; border-radius: 1.5rem; color: #fff; }
-
-      .style-cyber { background: #020617 !important; }
-      .style-cyber * { font-family: 'JetBrains Mono', monospace !important; }
-      .style-cyber .card-ui { background: #000; color: #22d3ee; border: 1px solid #164e63 !important; }
-
-      .style-neumorphic { background: #f0f2f5 !important; }
-      .style-neumorphic .card-ui { background: #f0f2f5; box-shadow: 12px 12px 24px #d1d9e6, -12px -12px 24px #ffffff; border-radius: 2.2rem; }
-
-      .style-pastel { background: #fff5f8 !important; }
-      .style-pastel .card-ui { background: #ffffff; border-radius: 3rem; box-shadow: 0 12px 30px rgba(244, 114, 182, 0.1); }
-
-      .style-midnight { background: #020617 !important; }
-      .style-midnight .card-ui { background: #1e293b; border-radius: 2rem; }
-
-      .style-retro { background: #fdf6e3 !important; }
-      .style-retro .card-ui { background: #fff; border: 3px solid #4a3728 !important; border-radius: 0.5rem; }
-
-      .style-aurora { background: linear-gradient(120deg, #e0f2fe, #fef3c7, #fce7f3) fixed !important; }
-      .style-aurora .card-ui { background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); border-radius: 2.5rem; }
-
-      .style-obsidian { background: #09090b !important; }
-      .style-obsidian .card-ui { background: #18181b; border-radius: 2rem; color: #fafafa; }
-
-      /* ... other presets follow same pattern ... */
+      .card-ui { 
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0,0,0,0.05) !important;
+      }
+      .dark .card-ui {
+        border: 1px solid rgba(255,255,255,0.05) !important;
+      }
 
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
