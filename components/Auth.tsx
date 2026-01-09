@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { api } from '../services/api';
 
@@ -22,74 +21,80 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
       if (isLogin) {
         const res = await api.login(email || username, password);
         if (res.success) onLogin(res.user);
-        else setError("Wrong details. Check your password and try again.");
+        else setError("Access Denied. Invalid credentials.");
       } else {
         const res = await api.signup({ username, email, password });
         if (res.success) onLogin(res.user);
-        else setError("Signup failed. This name or email is already taken.");
+        else setError("Registration failed. Data collision.");
       }
     } catch (err) {
-      setError("No internet connection. Please try again.");
+      setError("Network unavailable. Check your connection.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 transition-colors duration-500">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-[3.5rem] shadow-2xl p-10 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 transition-all duration-500 overflow-hidden relative">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
+         <div className="absolute top-[-20%] right-[-10%] w-[100%] aspect-square bg-indigo-600/10 rounded-full blur-[120px] animate-pulse-slow"></div>
+         <div className="absolute bottom-[-10%] left-[-10%] w-[70%] aspect-square bg-violet-600/10 rounded-full blur-[100px]"></div>
+      </div>
+
+      <div className="w-full max-w-sm bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl rounded-[3.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] p-10 xs:p-12 relative z-10 border border-white/20 dark:border-white/5 animate-in slide-in-from-bottom-10 duration-700">
         <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-slate-900 dark:bg-white rounded-[2.5rem] shadow-xl flex items-center justify-center text-white dark:text-slate-900 text-4xl font-black mx-auto mb-6 transform -rotate-6">
+          <div className="w-16 h-16 xs:w-20 xs:h-20 bg-slate-900 dark:bg-white rounded-[2rem] shadow-2xl flex items-center justify-center text-white dark:text-slate-900 text-3xl xs:text-4xl font-black mx-auto mb-8 transform -rotate-6">
             F
           </div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-            {isLogin ? 'Welcome Back' : 'Join Us'}
+          <h1 className="text-3xl xs:text-4xl font-black text-slate-900 dark:text-white tracking-tighter leading-none">
+            {isLogin ? 'Welcome' : 'Join Us'}
           </h1>
-          <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-2">
-            {isLogin ? 'Manage your money easily' : 'Start tracking your pocket money today'}
+          <p className="text-slate-400 font-bold text-[9px] uppercase tracking-[0.4em] mt-4 opacity-70">
+            {isLogin ? 'FinanceFlow Pro Wealth OS' : 'Secure your digital asset future'}
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-500/10 rounded-2xl text-red-500 text-[10px] font-black uppercase text-center">
+          <div className="mb-8 p-4 bg-red-500 text-white rounded-3xl text-[9px] font-black uppercase tracking-widest text-center animate-in zoom-in-95 shadow-lg shadow-red-500/20">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {!isLogin && (
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Choose a Name</label>
+              <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Identifier</label>
               <input 
                 type="text" 
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-800 rounded-2xl py-5 px-6 text-sm font-bold dark:text-white"
-                placeholder="your name"
+                className="w-full bg-slate-50 dark:bg-slate-800 rounded-3xl py-5 px-6 text-sm font-bold dark:text-white border-transparent focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none shadow-inner"
+                placeholder="Unique Username"
                 required
               />
             </div>
           )}
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Email or Name</label>
+            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Credential</label>
             <input 
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-800 rounded-2xl py-5 px-6 text-sm font-bold dark:text-white"
-              placeholder="email@example.com"
+              className="w-full bg-slate-50 dark:bg-slate-800 rounded-3xl py-5 px-6 text-sm font-bold dark:text-white border-transparent focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none shadow-inner"
+              placeholder="Email or Username"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Password</label>
+            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-4">Secure Key</label>
             <input 
               type="password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-800 rounded-2xl py-5 px-6 text-sm font-bold dark:text-white"
+              className="w-full bg-slate-50 dark:bg-slate-800 rounded-3xl py-5 px-6 text-sm font-bold dark:text-white border-transparent focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none shadow-inner"
               placeholder="••••••••"
               required
             />
@@ -98,18 +103,18 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
           <button 
             type="submit"
             disabled={loading}
-            className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-5 rounded-[2rem] shadow-xl active:scale-95 transition-all mt-4 disabled:opacity-50 text-[11px] uppercase tracking-widest"
+            className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-6 rounded-full shadow-2xl active:scale-95 transition-all mt-6 disabled:opacity-50 text-[10px] uppercase tracking-[0.3em]"
           >
-            {loading ? 'Working...' : (isLogin ? 'Log In' : 'Sign Up')}
+            {loading ? 'Initializing...' : (isLogin ? 'Access App' : 'Create Vault')}
           </button>
         </form>
 
-        <div className="text-center mt-8">
+        <div className="text-center mt-10">
           <button 
             onClick={() => setIsLogin(!isLogin)}
-            className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-slate-600"
+            className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] hover:text-indigo-600 transition-colors"
           >
-            {isLogin ? "New here? Create Account" : "Already have an account? Log In"}
+            {isLogin ? "New user? Link Node" : "Existing user? Login"}
           </button>
         </div>
       </div>
