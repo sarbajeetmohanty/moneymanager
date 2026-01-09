@@ -29,7 +29,7 @@
       }
     </script>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono:wght@400;800&family=Outfit:wght@300;600;900&family=Lexend:wght@300;600;900&family=Inter:wght@400;900&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;500;700&display=swap');
       
       * { 
         font-family: 'Plus Jakarta Sans', sans-serif; 
@@ -43,114 +43,35 @@
       ::-webkit-scrollbar { display: none; }
       body { transition: background-color 0.4s ease; touch-action: manipulation; }
 
-      /* BORDERLESS DESIGN SYSTEM - 20 PRESETS */
-      
-      /* 1. Modern (Clean) */
+      /* BORDERLESS DESIGN SYSTEM PRESETS */
       .style-modern { --ui-bg: #f8fafc; }
       .style-modern .card-ui { background: #ffffff; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.06); border-radius: 2.5rem; }
       .dark.style-modern .card-ui { background: #0f172a; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
-
-      /* 2. Glass (Translucent) */
-      .style-glass { background: fixed linear-gradient(160deg, #4f46e5 0%, #9333ea 100%) !important; }
-      .style-glass .card-ui { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(30px); border-radius: 2.5rem; color: white; }
-      .dark.style-glass .card-ui { background: rgba(0, 0, 0, 0.25); }
-
-      /* 3. Void (Pure Black) */
-      .style-void { background: #000 !important; }
-      .style-void .card-ui { background: #0a0a0a; box-shadow: 0 0 0 1px #222; border-radius: 1.5rem; color: white; }
-
-      /* 4. Cyber (High Contrast) */
-      .style-cyber { background: #020617 !important; }
-      .style-cyber * { font-family: 'JetBrains Mono', monospace !important; }
-      .style-cyber .card-ui { background: #000; box-shadow: 0 0 20px rgba(0, 255, 255, 0.1); color: #0ff; clip-path: polygon(0% 0%, 100% 0%, 100% 90%, 95% 100%, 0% 100%); }
-
-      /* 5. Neumorphic (Soft Extrusions) */
-      .style-neumorphic { background: #e0e5ec !important; }
-      .style-neumorphic .card-ui { background: #e0e5ec; box-shadow: 12px 12px 24px #bebebe, -12px -12px 24px #ffffff; border-radius: 2.5rem; }
-      .dark.style-neumorphic { background: #121418 !important; }
-      .dark.style-neumorphic .card-ui { background: #121418; box-shadow: 8px 8px 16px #090a0c, -8px -8px 16px #1b1e24; }
-
-      /* 6. Pastel (Soft Tones) */
-      .style-pastel { background: #fffcf2 !important; }
-      .style-pastel .card-ui { background: #ffffff; border-radius: 3.5rem; box-shadow: 0 20px 0 #f0f0f0; }
-
-      /* 7. Midnight (Deep Blue) */
-      .style-midnight { background: #020617 !important; }
-      .style-midnight .card-ui { background: #1e293b; border-radius: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: white; }
-
-      /* 8. Brutalist (Bold Shadows) */
-      .style-brutalist { background: #ffffff !important; }
-      .style-brutalist .card-ui { background: #ffffff; border: 4px solid #000 !important; box-shadow: 10px 10px 0 #000; border-radius: 0; }
-
-      /* 9. Retro (Vintage) */
-      .style-retro { background: #d7ccc8 !important; }
-      .style-retro * { font-family: 'Space Grotesk', sans-serif !important; }
-      .style-retro .card-ui { background: #f5f5f5; border-radius: 0.5rem; border: 2px solid #5d4037 !important; }
-
-      /* 10. Aurora (Vibrant) */
-      .style-aurora { background: linear-gradient(to bottom right, #ffafbd, #ffc3a0) !important; }
-      .style-aurora .card-ui { background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border-radius: 3rem; }
-
-      /* 11. Deep Sea (Navy/Teal) */
-      .style-deepsea { background: #001f3f !important; }
-      .style-deepsea .card-ui { background: #003366; color: #7fdbff; border-radius: 2.5rem; }
-
-      /* 12. Sunset (Warm) */
-      .style-sunset { background: #ff5f6d !important; }
-      .style-sunset .card-ui { background: #ffc371; border-radius: 3rem; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
-
-      /* 13. Forest (Greenery) */
-      .style-forest { background: #1b3022 !important; }
-      .style-forest .card-ui { background: #2d5a27; color: #a3d9a5; border-radius: 2.5rem; }
-
-      /* 14. Monochrome (Grayscale) */
-      .style-monochrome { background: #f2f2f2 !important; }
-      .style-monochrome .card-ui { background: #ffffff; color: #000; filter: grayscale(1); border-radius: 2.5rem; }
-
-      /* 15. Royal (Gold/Purple) */
-      .style-royal { background: #2c0735 !important; }
-      .style-royal .card-ui { background: #4b1d3f; color: #ffd700; border-radius: 2.5rem; box-shadow: 0 15px 30px rgba(0,0,0,0.6); }
-
-      /* 16. Paper (Flat) */
-      .style-paper { background: #fafafa !important; }
-      .style-paper .card-ui { background: #ffffff; box-shadow: none; border: 1px solid #eee !important; border-radius: 0.25rem; }
-
-      /* 17. Neon Night (Glowing) */
-      .style-neon { background: #0d0221 !important; }
-      .style-neon .card-ui { background: #0f084b; color: #00ffcc; box-shadow: 0 0 15px #00ffcc; border-radius: 2.5rem; }
-
-      /* 18. Soft Focus (Blurred) */
-      .style-soft { background: #fdf2f8 !important; }
-      .style-soft .card-ui { background: #ffffff; box-shadow: 0 30px 60px rgba(0,0,0,0.03); border-radius: 4rem; }
-
-      /* 19. Quartz (Crystal) */
-      .style-quartz { background: #ffffff !important; }
-      .style-quartz .card-ui { background: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.3) !important; box-shadow: 0 4px 30px rgba(0,0,0,0.1); backdrop-filter: blur(5px); border-radius: 2rem; }
-
-      /* 20. Obsidian (Matte Dark) */
-      .style-obsidian { background: #1a1a1a !important; }
-      .style-obsidian .card-ui { background: #262626; color: #e5e5e5; border-radius: 2.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+      
+      /* Additional styles for pending/completed transactions */
+      .status-pending { color: #d97706; }
+      .status-completed { color: #059669; }
+      .status-rejected { color: #dc2626; }
 
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-      /* Touch Feedback */
-      .active-scale:active { transform: scale(0.96); transition: transform 0.1s ease; }
     </style>
-<script type="importmap">
+    <script type="importmap">
 {
   "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+    "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "recharts": "https://esm.sh/recharts@^3.6.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3"
+    "react/": "https://esm.sh/react@^19.2.3/"
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 overflow-hidden no-scrollbar">
     <div id="root" class="h-full no-scrollbar"></div>
-<script type="module" src="/index.tsx"></script>
+    <script type="module" src="index.tsx"></script>
 </body>
 </html>
