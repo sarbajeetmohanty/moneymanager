@@ -1,0 +1,7 @@
+{
+  "name": "FinanceFlow Pro",
+  "description": "A comprehensive real-time financial tracking application with support for split bills, friend lending, and Google Sheets backend integration.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
