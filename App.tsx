@@ -81,9 +81,9 @@ export const App: React.FC = () => {
 
   if (isInitializing) {
     return (
-      <div className="h-screen bg-white dark:bg-slate-950 flex flex-col items-center justify-center space-y-4">
-        <div className="w-12 h-12 bg-indigo-600 rounded-[1.5rem] animate-bounce shadow-2xl shadow-indigo-500/50"></div>
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Syncing Wealth...</p>
+      <div className="h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center space-y-4">
+        <div className="w-12 h-12 bg-indigo-600 rounded-[1.5rem] animate-bounce shadow-2xl"></div>
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Syncing Wealth...</p>
       </div>
     );
   }
@@ -113,7 +113,7 @@ export const App: React.FC = () => {
 
         {toast && (
           <div className="fixed top-14 left-1/2 -translate-x-1/2 z-[300] animate-in slide-in-from-top-12 fade-in duration-500">
-            <div className={`px-8 py-5 rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] backdrop-blur-3xl flex items-center gap-4 ${
+            <div className={`px-8 py-5 rounded-[2.5rem] shadow-2xl backdrop-blur-3xl flex items-center gap-4 ${
               toast.type === 'error' ? 'bg-red-500 text-white' : 
               toast.type === 'info' ? 'bg-indigo-600 text-white' : 
               'bg-slate-900 dark:bg-white text-white dark:text-slate-900'
@@ -127,12 +127,12 @@ export const App: React.FC = () => {
         {showLogoutModal && (
           <div className="fixed inset-0 z-[400] flex items-center justify-center bg-slate-950/80 backdrop-blur-xl p-6">
             <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-[3.5rem] p-12 shadow-2xl animate-in zoom-in-95 duration-500 text-center border border-white/5">
-              <div className="w-20 h-20 bg-red-100 dark:bg-red-500/10 text-red-600 rounded-[2.2rem] flex items-center justify-center mx-auto mb-8 transform -rotate-6 shadow-xl">
+              <div className="w-20 h-20 bg-red-100 dark:bg-red-500/10 text-red-600 rounded-[2.2rem] flex items-center justify-center mx-auto mb-8 transform -rotate-6">
                 <i className="fa-solid fa-power-off text-3xl"></i>
               </div>
               <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-4">Confirm Logout</h2>
               <p className="text-slate-400 text-xs font-bold leading-relaxed mb-10 px-4">
-                Are you sure you want to log out? Any pending actions will remain saved and can be continued after logging back in.
+                Are you sure you want to log out? Any pending actions will remain saved and can be continued later.
               </p>
               <div className="grid grid-cols-2 gap-4">
                 <button 
@@ -143,7 +143,7 @@ export const App: React.FC = () => {
                 </button>
                 <button 
                   onClick={confirmLogout} 
-                  className="bg-red-600 text-white py-5 rounded-3xl shadow-xl shadow-red-500/20 text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all"
+                  className="bg-red-600 text-white py-5 rounded-3xl shadow-xl text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all"
                 >
                   Logout
                 </button>
