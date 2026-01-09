@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { User } from '../types';
 import { useApp } from '../App';
@@ -33,8 +34,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
   const currentThemeColor = themeColors[user.theme || 'indigo'];
 
   return (
-    <div className="flex flex-col h-full relative no-scrollbar transition-colors duration-500 overflow-hidden">
-      <header className="flex items-center justify-between px-6 xs:px-8 py-6 xs:py-8 bg-transparent z-30 sticky top-0 flex-shrink-0 transition-all">
+    <div className="flex flex-col h-full relative no-scrollbar transition-colors duration-500 overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <header className="flex items-center justify-between px-6 xs:px-8 py-6 xs:py-8 bg-transparent z-30 sticky top-0 flex-shrink-0 transition-all backdrop-blur-xl border-b border-transparent">
         <div className="flex items-center gap-4 xs:gap-5">
           <div 
             onClick={() => setActiveTab('home')}
@@ -44,7 +45,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
           </div>
           <div className="hidden xs:block">
             <h1 className="text-xl xs:text-2xl font-black text-slate-900 dark:text-white leading-none tracking-tighter">FinanceFlow</h1>
-            <p className="text-[10px] font-black text-slate-700 dark:text-slate-300 uppercase tracking-[0.4em] mt-1.5 opacity-100">Wealth Tracker</p>
+            <p className="text-[10px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-[0.4em] mt-1.5 opacity-100">Wealth Tracker</p>
           </div>
         </div>
         
@@ -52,7 +53,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
           <button 
             onClick={handleRefreshClick}
             disabled={isRefreshing}
-            className={`w-11 h-11 xs:w-12 xs:h-12 rounded-full bg-white dark:bg-slate-900 shadow-lg flex items-center justify-center text-slate-800 dark:text-slate-400 transition-all active:scale-75 ${isRefreshing ? 'animate-spin-slow text-indigo-600' : ''}`}
+            className={`w-11 h-11 xs:w-12 xs:h-12 rounded-full bg-white dark:bg-slate-900 shadow-lg flex items-center justify-center text-slate-900 dark:text-slate-400 transition-all active:scale-75 ${isRefreshing ? 'animate-spin-slow text-indigo-600' : ''}`}
           >
             <i className="fa-solid fa-sync-alt text-sm"></i>
           </button>
@@ -80,21 +81,21 @@ export const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTa
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto no-scrollbar relative z-10">
+      <main className="flex-1 overflow-y-auto no-scrollbar relative z-10 px-4">
         <div className="max-w-2xl mx-auto w-full h-full">
           {children}
         </div>
       </main>
 
-      {/* FULL WIDTH FLUSH NAVIGATION */}
-      <nav className="fixed bottom-0 left-0 right-0 h-24 bg-white/98 dark:bg-slate-900/98 backdrop-blur-[50px] rounded-t-[3.5rem] shadow-[0_-15px_60px_rgba(0,0,0,0.15)] flex justify-around items-center z-[100] transition-all px-6 pb-6 border-t border-slate-100 dark:border-slate-800">
+      {/* RE-ENGINEERED NAVIGATION: Full Width & Strictly Flush */}
+      <nav className="fixed bottom-0 left-0 right-0 h-24 bg-white/98 dark:bg-slate-900/98 backdrop-blur-[50px] rounded-t-[3.5rem] shadow-[0_-15px_60px_rgba(0,0,0,0.15)] flex justify-around items-center z-[100] transition-all px-6 pb-6 border-t border-slate-200 dark:border-slate-800">
         <NavButton icon="fa-house" active={activeTab === 'home'} onClick={() => setActiveTab('home')} themeColor={user.theme} />
         <NavButton icon="fa-layer-group" active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')} themeColor={user.theme} />
         
         <div className="relative -top-14">
            <button 
              onClick={() => setActiveTab('transactions')} 
-             className={`w-20 h-20 xs:w-24 xs:h-24 ${currentThemeColor} text-white rounded-full shadow-[0_30px_60px_-10px_rgba(0,0,0,0.4)] flex items-center justify-center transform transition-all active:scale-75 active:rotate-45 active-scale shadow-2xl`}
+             className={`w-20 h-20 xs:w-24 xs:h-24 ${currentThemeColor} text-white rounded-full shadow-[0_30px_60px_-10px_rgba(0,0,0,0.4)] flex items-center justify-center transform transition-all active:scale-75 active:rotate-45 active-scale shadow-2xl ring-8 ring-slate-50 dark:ring-slate-950`}
            >
             <i className="fa-solid fa-plus text-3xl xs:text-4xl"></i>
            </button>
