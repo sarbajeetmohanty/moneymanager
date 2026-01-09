@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { User } from '../types';
 import { 
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  Cell, PieChart, Pie, BarChart, Bar, AreaChart, Area, Legend
+  Cell, BarChart, Bar, AreaChart, Area
 } from 'recharts';
 import { api } from '../services/api';
 import { useApp } from '../App';
@@ -23,12 +23,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const [stats, setStats] = useState({
     total: 0, cash: 0, online: 0, pending: 0, incoming: 0, outgoing: 0, moneyGiven: 0, moneyTaken: 0
   });
-
-  const themeColors: Record<string, string> = {
-    indigo: '#6366f1', rose: '#f43f5e', emerald: '#10b981', amber: '#f59e0b', violet: '#8b5cf6',
-    sky: '#0ea5e9', cyan: '#06b6d4', fuchsia: '#d946ef', pink: '#ec4899', orange: '#f97316',
-    lime: '#84cc16', teal: '#14b8a6', slate: '#475569', zinc: '#3f3f46', neutral: '#404040'
-  };
 
   const fetchData = async () => {
     const [dashRes, histRes] = await Promise.all([
@@ -62,15 +56,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       }
       if (timeFilter === '7D') return (now.getTime() - tDate.getTime()) < (7 * 24 * 3600 * 1000);
       if (timeFilter === '30D') return (now.getTime() - tDate.getTime()) < (30 * 24 * 3600 * 1000);
-      if (timeFilter === 'Custom' && customRange.start && customRange.end) {
-        const start = new Date(customRange.start);
-        const end = new Date(customRange.end);
-        end.setHours(23, 59, 59);
-        return tDate >= start && tDate <= end;
-      }
       return true;
     });
-  }, [history, timeFilter, customRange]);
+  }, [history, timeFilter]);
 
   const cashFlowData = useMemo(() => {
     const daily: Record<string, any> = {};
@@ -92,95 +80,91 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       else if (t.type === 'Money Taken') tak += t.amount;
     });
     return [
-      { name: 'Income', value: inc, color: '#059669' },
-      { name: 'Spent', value: out, color: '#dc2626' },
-      { name: 'Given', value: giv, color: '#4f46e5' },
-      { name: 'Taken', value: tak, color: '#d97706' }
+      { name: 'Income', value: inc, color: '#10b981' },
+      { name: 'Spent', value: out, color: '#f43f5e' },
+      { name: 'Given', value: giv, color: '#6366f1' },
+      { name: 'Taken', value: tak, color: '#f59e0b' }
     ];
   }, [filteredHistory]);
 
   return (
-    <div className="space-y-6 xs:space-y-8 pb-48 no-scrollbar animate-in fade-in duration-1000 px-1">
+    <div className="space-y-8 pb-48 no-scrollbar animate-in fade-in duration-1000">
       
-      {/* VIBRANT HIGH-CONTRAST DASHBOARD HERO */}
-      <div className="card-ui p-8 xs:p-12 bg-gradient-to-br from-indigo-700 via-violet-700 to-indigo-900 dark:from-slate-900 dark:via-slate-950 dark:to-black text-white shadow-[0_40px_80px_-20px_rgba(79,70,229,0.4)] dark:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)] relative overflow-hidden group border-none rounded-[3.5rem]">
+      {/* Wealth Hero Card - Fixed "Odd" Visuals */}
+      <div className="card-ui p-8 xs:p-12 bg-gradient-to-br from-slate-900 via-indigo-950 to-black text-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-black relative overflow-hidden group border-none shadow-2xl rounded-[3rem]">
         <div className="relative z-10">
           <div className="flex justify-between items-start mb-6">
-            <p className="text-white/80 dark:text-white/60 text-[11px] font-black uppercase tracking-[0.4em]">Net Liquid Wealth</p>
+            <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.4em]">Liquid Asset Portfolio</p>
             {aiInsight && (
-              <div className="hidden xs:flex items-center gap-2 animate-in slide-in-from-right-8 duration-700 bg-white/20 dark:bg-white/10 px-4 py-2 rounded-full shadow-lg backdrop-blur-sm">
-                <i className="fa-solid fa-wand-magic-sparkles text-white text-[10px]"></i>
-                <p className="text-[9px] font-black uppercase tracking-widest text-white italic">{aiInsight}</p>
+              <div className="hidden xs:flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full backdrop-blur-md border border-white/10">
+                <i className="fa-solid fa-bolt text-indigo-400 text-[10px]"></i>
+                <p className="text-[9px] font-black uppercase tracking-widest text-white">{aiInsight}</p>
               </div>
             )}
           </div>
-          <h2 className="text-5xl xs:text-7xl font-black tracking-tighter mb-10 text-white drop-shadow-2xl">₹{(stats.total || 0).toLocaleString()}</h2>
+          <h2 className="text-5xl xs:text-7xl font-black tracking-tighter mb-10 text-white leading-none">₹{(stats.total || 0).toLocaleString()}</h2>
           
-          <div className="grid grid-cols-2 xs:grid-cols-3 gap-3 xs:gap-5">
-            <MetricBox label="In Bank" value={stats.online} color="text-indigo-100" />
-            <MetricBox label="In Hand" value={stats.cash} color="text-emerald-100" />
-            <MetricBox label="Pending" value={stats.pending} color="text-amber-100" />
-            <MetricBox label="Loaned" value={stats.moneyGiven} color="text-rose-100" />
-            <MetricBox label="Owed" value={stats.moneyTaken} color="text-cyan-100" />
+          <div className="grid grid-cols-2 xs:grid-cols-3 gap-4">
+            <MetricBox label="In Bank" value={stats.online} />
+            <MetricBox label="In Hand" value={stats.cash} />
+            <MetricBox label="Receivable" value={stats.moneyGiven} />
           </div>
         </div>
-        <div className="absolute -top-40 -right-40 w-[30rem] h-[30rem] bg-indigo-400/30 dark:bg-indigo-600/10 rounded-full blur-[140px] transition-transform duration-[4000ms] group-hover:scale-125"></div>
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500/20 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px]"></div>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex bg-white dark:bg-slate-900 p-2 rounded-[3rem] shadow-xl border border-slate-200 dark:border-slate-800">
-          {['Today', 'Yesterday', '7D', '30D', 'Custom'].map(f => (
-            <button
-              key={f}
-              onClick={() => setTimeFilter(f as TimeFilter)}
-              className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest rounded-full transition-all duration-300 ${timeFilter === f ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl scale-105' : 'text-slate-900 dark:text-slate-400 font-bold hover:bg-slate-50 dark:hover:bg-slate-800'}`}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
+      {/* Modern Filter Controls */}
+      <div className="flex bg-white/50 dark:bg-white/5 p-1.5 rounded-[2.5rem] backdrop-blur-xl border border-white/20 dark:border-white/5 shadow-inner mx-1">
+        {['Today', '7D', '30D'].map(f => (
+          <button
+            key={f}
+            onClick={() => setTimeFilter(f as TimeFilter)}
+            className={`flex-1 py-4 text-[9px] font-black uppercase tracking-widest rounded-full transition-all ${timeFilter === f ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl scale-105' : 'text-slate-500 hover:text-slate-800'}`}
+          >
+            {f}
+          </button>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="card-ui bg-white dark:bg-slate-900 p-8 shadow-xl relative overflow-hidden border border-slate-200 dark:border-slate-800 rounded-[2.5rem]">
-          <h3 className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
-            <i className="fa-solid fa-chart-line text-indigo-500"></i> Flux Analysis
-          </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-1">
+        {/* Flux Chart */}
+        <div className="card-ui p-8 shadow-xl relative overflow-hidden border border-white/10">
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-8">Asset Flow Velocity</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={cashFlowData}>
                 <defs>
                   <linearGradient id="colorIn" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.6}/>
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorOut" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.6}/>
+                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.4}/>
                     <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 900, fill: '#475569' }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-200 dark:text-slate-800" />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 8, fontWeight: 900, fill: 'currentColor' }} className="text-slate-400" />
                 <YAxis hide />
-                <Tooltip contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 20px 50px rgba(0,0,0,0.2)', fontSize: 10, fontWeight: 900 }} />
-                <Area type="monotone" dataKey="inflow" stroke="#10b981" fillOpacity={1} fill="url(#colorIn)" strokeWidth={4} />
-                <Area type="monotone" dataKey="outflow" stroke="#f43f5e" fillOpacity={1} fill="url(#colorOut)" strokeWidth={4} />
+                <Tooltip contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)', fontSize: 10, fontWeight: 900 }} />
+                <Area type="monotone" dataKey="inflow" stroke="#10b981" fillOpacity={1} fill="url(#colorIn)" strokeWidth={3} />
+                <Area type="monotone" dataKey="outflow" stroke="#f43f5e" fillOpacity={1} fill="url(#colorOut)" strokeWidth={3} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="card-ui bg-white dark:bg-slate-900 p-8 shadow-xl border border-slate-200 dark:border-slate-800 rounded-[2.5rem]">
-          <h3 className="text-[11px] font-black text-slate-900 dark:text-slate-300 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
-            <i className="fa-solid fa-pizza-slice text-amber-500"></i> Spending Distribution
-          </h3>
+        {/* Type Chart */}
+        <div className="card-ui p-8 shadow-xl border border-white/10">
+          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-8">Capital Allocation</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={analysisData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 900, fill: '#475569' }} />
-                <Tooltip cursor={{ fill: 'rgba(0,0,0,0.05)' }} contentStyle={{ borderRadius: '1.5rem', border: 'none', fontSize: 10, fontWeight: 900 }} />
-                <Bar dataKey="value" radius={[12, 12, 12, 12]} barSize={40}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-200 dark:text-slate-800" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 8, fontWeight: 900, fill: 'currentColor' }} className="text-slate-400" />
+                <Tooltip cursor={{ fill: 'rgba(0,0,0,0.03)' }} contentStyle={{ borderRadius: '1rem', border: 'none', fontSize: 10, fontWeight: 900 }} />
+                <Bar dataKey="value" radius={[10, 10, 10, 10]} barSize={32}>
                   {analysisData.map((entry, index) => <Cell key={index} fill={entry.color} />)}
                 </Bar>
               </BarChart>
@@ -192,9 +176,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   );
 };
 
-const MetricBox = ({ label, value, color }: any) => (
-  <div className="bg-white/10 dark:bg-slate-800/40 p-5 rounded-[2rem] hover:bg-white/20 dark:hover:bg-slate-800 transition-all duration-300 transform active:scale-95 group/metric cursor-default backdrop-blur-md border border-white/10 shadow-lg">
-    <p className="text-[10px] text-white/80 dark:text-white/40 font-black uppercase tracking-widest mb-2">{label}</p>
-    <p className={`text-base xs:text-lg font-black ${color} tracking-tight`}>₹{(value || 0).toLocaleString()}</p>
+const MetricBox = ({ label, value }: { label: string, value: number }) => (
+  <div className="bg-white/5 p-4 rounded-3xl border border-white/5 backdrop-blur-lg hover:bg-white/10 transition-all cursor-default group">
+    <p className="text-[8px] text-white/40 font-black uppercase tracking-widest mb-1 group-hover:text-white/60 transition-colors">{label}</p>
+    <p className="text-sm xs:text-base font-black text-white tracking-tight">₹{(value || 0).toLocaleString()}</p>
   </div>
 );
