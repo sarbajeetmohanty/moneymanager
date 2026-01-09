@@ -1,4 +1,3 @@
-import { GoogleGenAI } from "@google/genai";
 
 const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyqQg_e2kGxQO6npYMZZDwd7-m3ANpY8i7AEasNUQekPbw0WKJm-0gntcpbPzBVFGTb/exec';
 
