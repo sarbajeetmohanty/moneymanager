@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { User, TransactionType, PaymentMode, Friend } from '../types';
 import { api } from '../services/api';
@@ -24,13 +23,17 @@ export const Transactions: React.FC<TransactionsProps> = ({ user }) => {
   }, [activeMode, user.id, refreshKey]);
 
   const handleSave = async (payload: any) => {
+    // Enforcement of 2-step warning for non-simple transactions
     if (formType === 'Friend' || formType === 'Split') {
-      const confirmed = window.confirm("Transaction Security: This will create a pending record and notify involved parties. Are you sure?");
-      if (!confirmed) return;
+      const confirm1 = window.confirm("WARNING 1/2: This transaction will lock funds in a PENDING STATE. Please verify amount and mode.");
+      if (!confirm1) return;
+      const confirm2 = window.confirm("FINAL WARNING 2/2: Once saved, involved users will be notified to approve. Proceed?");
+      if (!confirm2) return;
     }
+
     const res = await api.saveTransaction(user.id, payload);
     if (res.success) {
-      showToast("Transaction Logged", "success");
+      showToast("Transaction logged successfully", "success");
       setActiveMode('History');
       refreshAll();
     } else {
@@ -41,7 +44,7 @@ export const Transactions: React.FC<TransactionsProps> = ({ user }) => {
   return (
     <div className="space-y-6 flex flex-col h-full animate-in fade-in duration-500 relative">
       <div className="flex bg-white/90 dark:bg-slate-900/90 backdrop-blur-3xl p-1.5 rounded-[2.5rem] shadow-2xl sticky top-2 z-50 mx-2">
-        <button onClick={() => setActiveMode('History')} className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest rounded-full transition-all duration-300 ${activeMode === 'History' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xl' : 'text-slate-400'}`}>Activity Feed</button>
+        <button onClick={() => setActiveMode('History')} className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest rounded-full transition-all duration-300 ${activeMode === 'History' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xl' : 'text-slate-400'}`}>Transaction Feed</button>
         <button onClick={() => setActiveMode('Add')} className={`flex-1 py-4 text-[10px] font-black uppercase tracking-widest rounded-full transition-all duration-300 ${activeMode === 'Add' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xl' : 'text-slate-400'}`}>New Record</button>
       </div>
 
@@ -99,19 +102,19 @@ const TransactionList = ({ history, user }: { history: any[], user: User }) => {
         {filteredHistory.map(t => (
           <div key={t.id} className="card-ui bg-white dark:bg-slate-900 p-6 flex items-center justify-between shadow-sm active:scale-95 transition-all group overflow-hidden relative">
             <div className="flex items-center gap-5 relative z-10">
-              <div className={`w-14 h-14 rounded-3xl flex items-center justify-center text-xl ${t.type.includes('In') || t.type.includes('Taken') ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
-                <i className={`fa-solid ${t.type.includes('In') || t.type.includes('Taken') ? 'fa-arrow-down' : 'fa-arrow-up'}`}></i>
+              <div className={`w-14 h-14 rounded-3xl flex items-center justify-center text-xl ${t.type.includes('In') || t.type.includes('Taken') || t.type === 'Income' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                <i className={`fa-solid ${t.type.includes('In') || t.type.includes('Taken') || t.type === 'Income' ? 'fa-arrow-down' : 'fa-arrow-up'}`}></i>
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <p className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">{t.category}</p>
                   {(t.status === 'Pending' || t.status === 'Paid') && <span className="bg-amber-400 text-black text-[7px] font-black px-2 py-0.5 rounded-full uppercase">Pending</span>}
                 </div>
-                <p className="text-[10px] text-slate-400 font-bold uppercase truncate max-w-[140px] opacity-70">{t.notes || t.subcategory || t.type}</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase truncate max-w-[140px] opacity-70">{t.notes || t.type}</p>
               </div>
             </div>
             <div className="text-right flex-shrink-0 relative z-10">
-              <p className={`text-lg font-black ${t.type.includes('In') || t.type.includes('Taken') ? 'text-green-600' : 'text-red-500'}`}>₹{(t.amount || 0).toLocaleString()}</p>
+              <p className={`text-lg font-black ${t.type.includes('In') || t.type.includes('Taken') || t.type === 'Income' ? 'text-green-600' : 'text-red-500'}`}>₹{(t.amount || 0).toLocaleString()}</p>
               <p className="text-[8px] text-slate-300 dark:text-slate-700 font-black uppercase tracking-tighter">{new Date(t.timestamp).toLocaleDateString()}</p>
             </div>
           </div>
@@ -125,7 +128,7 @@ const SimpleForm = ({ onSave, user }: { onSave: any, user: User }) => {
   const [type, setType] = useState<'Income' | 'Expense'>('Expense');
   const [amount, setAmount] = useState('');
   const [mode, setMode] = useState<PaymentMode>('Online');
-  const [selectedCat, setSelectedCat] = useState<number>(-1);
+  const [selectedCat, setSelectedCat] = useState<string>('');
   const [notes, setNotes] = useState('');
 
   return (
@@ -139,15 +142,15 @@ const SimpleForm = ({ onSave, user }: { onSave: any, user: User }) => {
       </div>
       <ModeSelector mode={mode} setMode={setMode} />
       <div className="space-y-4">
-        <p className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest ml-4">Category</p>
+        <p className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest ml-4">Select Category</p>
         <div className="flex gap-3 overflow-x-auto no-scrollbar py-2">
-          {(user.categories && user.categories.length > 0 ? user.categories : [{name: 'General'}]).map((c, i) => (
-            <button key={i} onClick={() => setSelectedCat(i)} className={`px-8 py-4 rounded-3xl whitespace-nowrap text-[10px] font-black uppercase tracking-tight transition-all ${selectedCat === i ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl scale-105' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>{c.name}</button>
+          {(user.categories && user.categories.length > 0 ? user.categories : [{name: 'Food'}, {name: 'Travel'}, {name: 'Rent'}]).map((c, i) => (
+            <button key={i} onClick={() => setSelectedCat(c.name)} className={`px-8 py-4 rounded-3xl whitespace-nowrap text-[10px] font-black uppercase tracking-tight transition-all ${selectedCat === c.name ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xl scale-105' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>{c.name}</button>
           ))}
         </div>
       </div>
-      <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="What was this for?" className="w-full bg-slate-50 dark:bg-slate-800 rounded-[2rem] py-6 px-8 text-sm font-bold dark:text-white shadow-inner" />
-      <button disabled={!amount || selectedCat === -1} onClick={() => onSave({ type, amount: parseFloat(amount), mode, category: (user.categories[selectedCat] || {name:'General'}).name, notes, timestamp: new Date().toISOString() })} className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-8 rounded-[2.5rem] shadow-2xl uppercase tracking-[0.4em] text-[11px] disabled:opacity-20 transition-all">Record Transaction</button>
+      <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Add note..." className="w-full bg-slate-50 dark:bg-slate-800 rounded-[2rem] py-6 px-8 text-sm font-bold dark:text-white shadow-inner" />
+      <button disabled={!amount || !selectedCat} onClick={() => onSave({ type, amount: parseFloat(amount), mode, category: selectedCat, notes, timestamp: new Date().toISOString() })} className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-8 rounded-[2.5rem] shadow-2xl uppercase tracking-[0.4em] text-[11px] disabled:opacity-20 transition-all">Save Transaction</button>
     </div>
   );
 };
@@ -159,6 +162,7 @@ const FriendForm = ({ onSave, user }: { onSave: any, user: User }) => {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [notes, setNotes] = useState('');
   const [mode, setMode] = useState<PaymentMode>('Online');
+  const [category, setCategory] = useState('Personal');
 
   useEffect(() => {
     api.fetchFriends(user.id).then(res => res.success && setFriends(res.friends));
@@ -175,7 +179,7 @@ const FriendForm = ({ onSave, user }: { onSave: any, user: User }) => {
         <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" className="w-full bg-transparent border-none text-center text-7xl font-black text-slate-900 dark:text-white focus:ring-0" />
       </div>
       <div className="space-y-4">
-        <p className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest ml-4">Involved Friend</p>
+        <p className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest ml-4">Select Friend Profile</p>
         <div className="flex gap-6 overflow-x-auto no-scrollbar px-2 py-4">
           {friends.map(f => (
             <button key={f.id} onClick={() => setSelectedFriend(f.id)} className={`flex flex-col items-center gap-3 transition-all ${selectedFriend === f.id ? 'scale-110' : 'opacity-30 grayscale'}`}>
@@ -186,8 +190,16 @@ const FriendForm = ({ onSave, user }: { onSave: any, user: User }) => {
         </div>
       </div>
       <ModeSelector mode={mode} setMode={setMode} />
-      <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notes for friend..." className="w-full bg-slate-50 dark:bg-slate-800 rounded-3xl py-6 px-8 text-sm font-bold dark:text-white shadow-inner" />
-      <button disabled={!selectedFriend || !amount} onClick={() => onSave({ type: option, amount: parseFloat(amount), friendId: selectedFriend, category: 'Personal', notes, mode, timestamp: new Date().toISOString() })} className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-8 rounded-[2.5rem] shadow-2xl uppercase tracking-[0.4em] text-[11px] disabled:opacity-20 transition-all">Submit Secure Link</button>
+      <div className="space-y-4">
+        <p className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-widest ml-4">Category</p>
+        <div className="flex gap-3 overflow-x-auto no-scrollbar py-2">
+          {['Personal', 'Lunch', 'Borrow', 'Loan'].map(cat => (
+            <button key={cat} onClick={() => setCategory(cat)} className={`px-8 py-4 rounded-3xl whitespace-nowrap text-[10px] font-black uppercase transition-all ${category === cat ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'}`}>{cat}</button>
+          ))}
+        </div>
+      </div>
+      <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Add note..." className="w-full bg-slate-50 dark:bg-slate-800 rounded-3xl py-6 px-8 text-sm font-bold dark:text-white shadow-inner" />
+      <button disabled={!selectedFriend || !amount} onClick={() => onSave({ type: option, amount: parseFloat(amount), friendId: selectedFriend, category, notes, mode, timestamp: new Date().toISOString() })} className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-8 rounded-[2.5rem] shadow-2xl uppercase tracking-[0.4em] text-[11px] disabled:opacity-20 transition-all">Record Activity</button>
     </div>
   );
 };
@@ -200,6 +212,7 @@ const SplitForm = ({ onSave, user }: { onSave: any, user: User }) => {
   const [shares, setShares] = useState<Record<string, number>>({});
   const [payerId, setPayerId] = useState(user.id);
   const [mode, setMode] = useState<PaymentMode>('Online');
+  const [category, setCategory] = useState('Split');
 
   useEffect(() => {
     api.fetchFriends(user.id).then(res => {
@@ -245,7 +258,7 @@ const SplitForm = ({ onSave, user }: { onSave: any, user: User }) => {
         <input type="number" value={total} onChange={(e) => setTotal(e.target.value)} placeholder="0.00" className="w-full bg-transparent border-none text-center text-7xl font-black text-slate-900 dark:text-white focus:ring-0" />
       </div>
       <div className="space-y-4">
-        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest ml-4">Participants</p>
+        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest ml-4">Involved Participants</p>
         <div className="flex gap-5 overflow-x-auto no-scrollbar px-2 py-4">
           {participants.map(f => (
             <button key={f.id} onClick={() => toggleParticipant(f.id)} className={`flex flex-col items-center gap-3 transition-all ${selectedParticipants.has(f.id) ? 'scale-110' : 'opacity-30 grayscale'}`}>
@@ -258,9 +271,9 @@ const SplitForm = ({ onSave, user }: { onSave: any, user: User }) => {
       {splitType === 'Custom' && (
         <div className="space-y-4 max-h-60 overflow-y-auto no-scrollbar pr-1">
           {Array.from(selectedParticipants).map(id => (
-            <div key={id} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl">
+            <div key={id} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl shadow-inner">
               <span className="text-[10px] font-black uppercase text-slate-900 dark:text-white">{participants.find(x => x.id === id)?.name}</span>
-              <input type="number" value={shares[id] || 0} onChange={e => handleCustomChange(id, e.target.value)} className="w-24 bg-transparent border-none text-right font-black text-lg dark:text-white" />
+              <input type="number" value={shares[id] || 0} onChange={e => handleCustomChange(id, e.target.value)} className="w-24 bg-transparent border-none text-right font-black text-lg dark:text-white focus:ring-0" />
             </div>
           ))}
         </div>
@@ -280,7 +293,7 @@ const SplitForm = ({ onSave, user }: { onSave: any, user: User }) => {
           </select>
         </div>
       </div>
-      <button disabled={!total || !isBalanced} onClick={() => onSave({ type: 'Split', amount: parseFloat(total), payerId, participants: Array.from(selectedParticipants).map(id => ({ userId: id, share: shares[id] })), category: 'Split Bill', notes: 'Group split', mode, timestamp: new Date().toISOString() })} className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-8 rounded-[3rem] shadow-2xl uppercase tracking-[0.4em] text-[11px] disabled:opacity-20 transition-all">Blast Split Bill</button>
+      <button disabled={!total || !isBalanced} onClick={() => onSave({ type: 'Split', amount: parseFloat(total), payerId, participants: Array.from(selectedParticipants).map(id => ({ userId: id, share: shares[id] })), category, notes: 'Group split bill', mode, timestamp: new Date().toISOString() })} className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-8 rounded-[3rem] shadow-2xl uppercase tracking-[0.4em] text-[11px] disabled:opacity-20 transition-all">Confirm Split</button>
     </div>
   );
 };
